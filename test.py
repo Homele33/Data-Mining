@@ -11,6 +11,7 @@ dim, k, n = 3, 5, 10000
 path = os.path.dirname(os.path.abspath(__file__))
 out_path = os.path.join(path, "big_data.csv")
 generate_data(dim, k, n, out_path)
+# test
 # points = load_points(out_path, dim)
 # clusters = k_means(dim, k=k,n=n, points=points)
 # print(len(clusters))
