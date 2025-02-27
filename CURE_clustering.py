@@ -247,7 +247,7 @@ def cure_cluster(dim, k, n, block_size, in_path, out_path):
     # Initial clustering can be done using k-means
     # This gives us a starting point for CURE
     initial_clusters = []
-    k_means(dim, len(sample), sample, k=k, clusts=initial_clusters)
+    k_means(dim, n=len(sample), points=sample, clusts=initial_clusters, k=k)
 
     # Create CURE clusters from initial clusters
     cure_clusters = []
