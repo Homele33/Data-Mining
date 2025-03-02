@@ -30,11 +30,9 @@ def h_clustering(dim, points,k=None, dist=None, clusts=[]):
         dist = euclidean_distance
 
     clusters = [[p] for p in points]  # Start with each point as its own cluster
-
     while k is None or len(clusters) > k:
         min_dist = float('inf')
         merge_idx = (-1, -1)
-
         # Find the two closest clusters based on maximum cohesion distance
         for i in range(len(clusters)):
             for j in range(i + 1, len(clusters)):

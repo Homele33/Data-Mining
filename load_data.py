@@ -24,5 +24,4 @@ def load_points(in_path, dim, n=-1, points=[]):
                 break
             points.append(tuple([float(value) for value in row[:dim]]))
             count += 1
-
     return points

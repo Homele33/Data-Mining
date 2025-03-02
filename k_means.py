@@ -30,7 +30,6 @@ def k_means(dim, k, n, points, clusts=[]):
     # Initialize centroids by randomly selecting k points
     centroid_indices = np.random.choice(n, k, replace=False)
     centroids = points_array[centroid_indices].copy()
-
     # Main k-means loop
     max_iterations = 100
 
@@ -55,7 +54,6 @@ def k_means(dim, k, n, points, clusts=[]):
         # Check for convergence (when centroids no longer move)
         if np.allclose(old_centroids, centroids):
             break
-
     # Convert clusters to the expected output format (list of points)
     for cluster_indices in clusters:
         cluster_points = [points[i] for i in cluster_indices]
