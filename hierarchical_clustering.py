@@ -7,12 +7,12 @@ def euclidean_distance(p1, p2):
     return np.linalg.norm(np.array(p1) - np.array(p2))
 
 
-def cluster_threshold(cluster, center, dist):
-    """Calculate the maximum distance between a point in a cluster and the cluster center."""
-    return max(dist(point, center) for point in cluster)
+def mean_squared_error(cluster, center, dist):
+    """Calculate the mean squared error for a given cluster."""
+    return sum((dist(point, center) ** 2) for point in cluster)
 
 
-def h_clustering(dim, points,k=None, dist=None, clusts=[]):
+def h_clustering(dim, points, k=None, dist=None, clusts=[]):
     """
     Perform bottom-up hierarchical clustering on points in `dim` dimensions.
 
@@ -24,36 +24,54 @@ def h_clustering(dim, points,k=None, dist=None, clusts=[]):
         clusts (list, optional): Output list to store clusters. Defaults to an empty list.
 
     Returns:
-        list: List of clusters, where each cluster is a list of points.
+        list: List of clusters, where each cluster is a NumPy array of points.
     """
+    cohesion = 80
     if dist is None:
         dist = euclidean_distance
 
-    clusters = [[p] for p in points]  # Start with each point as its own cluster
+    # Initialize clusters as a list of lists where each inner list contains one point
+    clusters = [[p] for p in points]
+
     while k is None or len(clusters) > k:
         min_dist = float('inf')
         merge_idx = (-1, -1)
+
         # Find the two closest clusters based on maximum cohesion distance
         for i in range(len(clusters)):
             for j in range(i + 1, len(clusters)):
-                max_dist = max(dist(p1, p2) for p1 in clusters[i] for p2 in clusters[j])
-                if max_dist < min_dist:
-                    min_dist = max_dist
-                    merge_idx = (i, j)
+                # Ensure clusters[i] and clusters[j] are lists of points
+                if not isinstance(clusters[i], list) or not isinstance(clusters[j], list):
+                    print(f"Warning: cluster at index {i} or {j} is not a list")
+                    continue
 
-        # Calculate stopping threshold as the maximum distance to cluster center
-        cluster_centers = [np.mean(cluster, axis=0) for cluster in clusters]
-        threshold = max(
-            cluster_threshold(cluster, center, dist) for cluster, center in zip(clusters, cluster_centers))
+                # Calculate maximum distance between all pairs of points
+                if len(clusters[i]) > 0 and len(clusters[j]) > 0:
+                    max_dist = max(dist(p1, p2) for p1 in clusters[i] for p2 in clusters[j])
+                    if max_dist < min_dist:
+                        min_dist = max_dist
+                        merge_idx = (i, j)
 
-        # Stop merging if no more clusters should be merged (when k=None and cohesion criterion is met)
-        if k is None and min_dist > threshold:
+        # If no valid merge found, break
+        if merge_idx == (-1, -1):
+            break
+
+        # Calculate stopping
+        i, j = merge_idx
+        cur_cluster = clusters[i] + clusters[j]  # Merge the two clusters
+
+        # Calculate cluster center and MSE
+        cur_cluster_center = np.mean(np.array(cur_cluster), axis=0)
+        mse = mean_squared_error(cur_cluster, cur_cluster_center, dist)
+
+        # Stop merging if condition met
+        if k is None and mse >= cohesion:
             break
 
         # Merge the closest clusters
-        i, j = merge_idx
-        clusters[i].extend(clusters[j])
-        del clusters[j]
+        clusters[i] = cur_cluster
+        clusters.pop(j)  # Remove the second cluster (use pop instead of np.delete)
 
-    clusts.extend(clusters)  # Store final clusters in output list
+    # Add all remaining clusters to the output list
+    clusts.extend(clusters)
     return clusts
