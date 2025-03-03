@@ -22,7 +22,7 @@ def preform_test(samples, h_clusters = {}, k_clusters = {}):
         k_clusters[i] = {}
         for k in range(2, 9):
             k_clusters[i][k] = k_means(dim, k, n, sample, [])
-            h_clusters[i][k] = h_clustering(dim, sample, k, None, [])
+            # h_clusters[i][k] = h_clustering(dim, sample, k, None, [])
     return k_clusters, h_clusters
 
 

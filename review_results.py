@@ -21,7 +21,7 @@ def evaluate_clustering_results(X, k_clusters, h_clusters):
     Two DataFrames with k values and corresponding silhouette scores for each algorithm
     """
     # Extract data without the class labels
-    data = X[:, :-1]
+    data = X
 
     # Initialize results dictionaries
     kmeans_results = {'k': [], 'silhouette_score': []}
@@ -107,7 +107,7 @@ def evaluate_clustering_accuracy(X, k_clusters, h_clusters):
     Two DataFrames with k values and accuracy for each algorithm
     """
     # Extract data without the class labels
-    data = X[:, :-1]
+    data = X
 
     # Extract true class labels
     true_labels = X[:, -1].astype(int)

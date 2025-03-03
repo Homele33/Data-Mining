@@ -83,16 +83,6 @@ def elbow_method(points, n):
         inertia = compute_inertia_for_k(points, k, n)
         inertias.append(inertia)
 
-    # Optional: Plot the elbow curve
-    plt.figure(figsize=(8, 5))
-    plt.plot(k_values, inertias, 'bo-')
-    plt.xlabel('Number of clusters (k)')
-    plt.ylabel('Inertia')
-    plt.title('Elbow Method for Optimal k')
-    plt.grid(True)
-    plt.savefig('elbow_curve.png')
-    plt.close()
-
     # Find the elbow point - where adding another cluster doesn't reduce inertia much
     if len(k_values) <= 2:
         return k_values[-1]
